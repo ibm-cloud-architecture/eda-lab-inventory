@@ -1,0 +1,45 @@
+####
+# This option does not seem to work as Apicruio would try to connect to Strimzi using ANONYMOUS as the user which there is no KafkaUser for and as result it would not get authorized
+# The KafkaUser ANONYMOUS can not be created as kubernetes enforces lowercase
+####
+# apiVersion: apicur.io/v1alpha1
+# kind: ApicurioRegistry
+# metadata:
+#   name: vaccine-apicurioregistry
+# spec:
+#   configuration:
+#     persistence: "streams"
+#     streams:
+#       bootstrapServers: "vaccine-kafka-kafka-bootstrap:9092"
+
+####
+# This option works but you need to provide the external openshift route for the Kafka Bootstrap external address
+####
+# apiVersion: apicur.io/v1alpha1
+# kind: ApicurioRegistry
+# metadata:
+#   name: vaccine-apicurioregistry
+# spec:
+#   configuration:
+#     persistence: "streams"
+#     streams:
+#       bootstrapServers: "<KAFKA_BOOTSTRAP_ROUTE>:443"
+#       security:
+#         scram:
+#           user: scram-user
+#           passwordSecretName: scram-user
+#           truststoreSecretName: kafka-cluster-ca-cert
+
+apiVersion: apicur.io/v1alpha1
+kind: ApicurioRegistry
+metadata:
+  name: my-apicurioregistry
+spec:
+  configuration:
+    persistence: "streams"
+    streams:
+      bootstrapServers: "my-kafka-kafka-bootstrap:9093"
+      security:
+        tls:
+          keystoreSecretName: tls-user
+          truststoreSecretName: kafka-cluster-ca-cert
