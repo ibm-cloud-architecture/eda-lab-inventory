@@ -4,7 +4,8 @@ scriptDir=$(dirname $0)
 function deployStoreSimulatorApp {
     export TARGET_MSG=kafka
     export KAFKA_BOOTSTRAP_SERVERS=$1
-    YOUR_PROJECT_NAME=$2
+    export TOPIC_NAME=$2
+    YOUR_PROJECT_NAME=$3
     cat ${scriptDir}/../apps/store-simulator/base/configmap.yaml | envsubst | \
             tee ${scriptDir}/../apps/store-simulator/overlay/configmap.yaml >/dev/null
 
