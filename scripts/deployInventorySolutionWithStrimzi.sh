@@ -253,8 +253,6 @@ else
 fi
 
 
-
-
 #####################################################
 ### 5. Store simulator app ###
 #####################################################
@@ -263,8 +261,17 @@ echo "5. Store simulator app "
 echo "----------------------------------------------------------"
 echo "Deploy the Store simulator microservice"
 source ${scriptDir}/deployStoreSimulator.sh
-deployStoreSimulatorApp $kafka_cluster_internal_listener
+deployStoreSimulatorApp $kafka_cluster_internal_listener $YOUR_PROJECT_NAME
 
+#####################################################
+### 6. Item aggregator app ###
+#####################################################
+echo
+echo "6. Item aggregator app "
+echo "----------------------------------------------------------"
+echo "Deploy the Item aggregator microservice"
+source ${scriptDir}/deployItemAggregator.sh
+deployItemAggregator $kafka_cluster_internal_listener $YOUR_PROJECT_NAME
 
 echo
 echo "********************"

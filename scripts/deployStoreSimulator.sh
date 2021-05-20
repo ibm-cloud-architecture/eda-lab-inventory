@@ -20,4 +20,4 @@ function deployStoreSimulatorApp {
     fi
 }
 
-deployStoreSimulatorApp my-kafka-kafka-bootstrap.mysandbox.svc:9093 mysandbox
+# deployStoreSimulatorApp my-kafka-kafka-bootstrap.mysandbox.svc:9093 mysandbox

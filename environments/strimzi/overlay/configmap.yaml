@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inventory-kafka-cm
+data:
+  INVENTORY_TOPIC: jb-inventory
+  ITEMS_TOPIC: jb-items
+  KAFKA_BOOTSTRAP_SERVERS: 'my-kafka-kafka-bootstrap.mysandbox.svc:9093'
+  KAFKA_BOOTSTRAP_SERVERS_EXT: 'my-kafka-kafka-bootstrap-mysandbox.apps.dooku.coc-ibm.com:443'

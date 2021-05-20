@@ -1,2 +1,4 @@
+resources:
+  - ./configmap.yaml
 bases:
   - ../base
