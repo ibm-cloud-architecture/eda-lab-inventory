@@ -4,9 +4,9 @@ metadata:
   name: store-simulator-cm
 data:
   APP_VERSION: 0.0.4
-  APP_TARGET_MESSAGING: Kafka
-  KAFKA_BOOTSTRAP_SERVERS: my-kafka-kafka-bootstrap.mysandbox.svc:9093
-  KAFKA_TOPIC_NAME: jb-items
+  APP_TARGET_MESSAGING: kafka
+  KAFKA_BOOTSTRAP_SERVERS: my-kafka-kafka-bootstrap.rt-inventory.svc:9093
+  KAFKA_TOPIC_NAME: items
   MQ_HOST: mq1-cp4i-ibm-mq.cp4i-mq1.svc
   # external: mq1-cp4i-ibm-mq-qm-cp4i-mq1.apps.biggs.coc-ibm.com
   MQ_PORT: "1414"

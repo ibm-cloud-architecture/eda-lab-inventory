@@ -1,25 +1,33 @@
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   annotations:
+    prometheus.io/port: "8080"
+    prometheus.io/scheme: http
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /q/metrics
     app.openshift.io/vcs-url: https://github.com/ibm-cloud-architecture/refarch-eda-store-simulator.git
   labels:
+    app.kubernetes.io/version: 0.0.1
     app.kubernetes.io/name: store-simulator
-    app: store-simulator
-    app.openshift.io/runtime: quarkus
   name: store-simulator
 spec:
   replicas: 1
   selector:
-    app.kubernetes.io/name: store-simulator
+    matchLabels:
+      app.kubernetes.io/version: 0.0.1
+      app.kubernetes.io/name: store-simulator
   template:
     metadata:
       annotations:
+        prometheus.io/port: "8080"
+        prometheus.io/scheme: http
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /q/metrics
         app.openshift.io/vcs-url: https://github.com/ibm-cloud-architecture/refarch-eda-store-simulator.git
       labels:
+        app.kubernetes.io/version: 0.0.1
         app.kubernetes.io/name: store-simulator
-        app.openshift.io/runtime: quarkus
-        app: store-simulator
     spec:
       containers:
       - args:
@@ -67,7 +75,7 @@ spec:
         - configMapRef:
             name: store-simulator-cm
         - configMapRef:
-            name: inventory-kafka-cm
+            name: kafka-env-cm
         image: quay.io/ibmcase/eda-store-simulator
         imagePullPolicy: Always
         livenessProbe:
@@ -104,15 +112,13 @@ spec:
           name: user-cert
           readOnly: false
           subPath: ""
-      serviceAccount: store-simulator
+      serviceAccount: inventory-solution-sa
       volumes:
       - name: kafka-cert
         secret:
-          defaultMode: 384
           optional: true
           secretName: kafka-cluster-ca-cert
       - name: user-cert
         secret:
-          defaultMode: 384
           optional: true
           secretName: tls-user

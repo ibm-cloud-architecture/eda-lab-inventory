@@ -7,15 +7,15 @@ metadata:
     prometheus.io/scrape: "true"
     prometheus.io/path: /q/metrics
   labels:
-    app.kubernetes.io/version: 0.0.7
-    app.kubernetes.io/name: item-aggregator
-  name: item-aggregator
+    app.kubernetes.io/version: 0.0.1
+    app.kubernetes.io/name: store-aggregator
+  name: store-aggregator
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app.kubernetes.io/version: 0.0.7
-      app.kubernetes.io/name: item-aggregator
+      app.kubernetes.io/version: 0.0.1
+      app.kubernetes.io/name: store-aggregator
   template:
     metadata:
       annotations:
@@ -24,8 +24,8 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/path: /q/metrics
       labels:
-        app.kubernetes.io/version: 0.0.7
-        app.kubernetes.io/name: item-aggregator
+        app.kubernetes.io/version: 0.0.1
+        app.kubernetes.io/name: store-aggregator
     spec:
       containers:
       - args:
@@ -66,10 +66,10 @@ spec:
               name: tls-user
         envFrom:
         - configMapRef:
-            name: item-aggregator-cm
+            name: store-aggregator-cm
         - configMapRef:
             name: kafka-env-cm
-        image: quay.io/ibmcase/item-aggregator
+        image: quay.io/ibmcase/store-aggregator
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -81,7 +81,7 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           timeoutSeconds: 10
-        name: item-aggregator
+        name: store-aggregator
         ports:
         - containerPort: 8080
           name: http
@@ -110,7 +110,7 @@ spec:
       - name: kafka-cert
         secret:
           optional: true
-          secretName: my-kafka-cluster-ca-cert
+          secretName: kafka-cluster-ca-cert
       - name: user-cert
         secret:
           optional: true

@@ -5,7 +5,9 @@ function deployStoreSimulatorApp {
     export TARGET_MSG=kafka
     export KAFKA_BOOTSTRAP_SERVERS=$1
     export TOPIC_NAME=$2
-    YOUR_PROJECT_NAME=$3
+    export YOUR_PROJECT_NAME=$3
+    echo "Deploy Store simulator microservice"
+    # substiture the env variables inside the base config map with local env
     cat ${scriptDir}/../apps/store-simulator/base/configmap.yaml | envsubst | \
             tee ${scriptDir}/../apps/store-simulator/overlay/configmap.yaml >/dev/null
 
@@ -14,9 +16,9 @@ function deployStoreSimulatorApp {
     oc wait pod --for=condition=Ready -l app.kubernetes.io/name=store-simulator -n ${YOUR_PROJECT_NAME} --timeout=300s
     if [[ $? -gt 0 ]]; 
     then 
-    echo "[ERROR] - An error occurred while deploying the Store simulator microservice"; exit 1; 
+        echo "[ERROR] - An error occurred while deploying the Store simulator microservice"; exit 1; 
     else 
-    echo "Done"; 
+        echo "--> Done"; 
     fi
 }
 
