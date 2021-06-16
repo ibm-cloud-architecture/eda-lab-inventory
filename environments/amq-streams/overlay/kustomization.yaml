@@ -1,0 +1,5 @@
+resources:
+  - ./configmap.yaml
+  - ./kafka-topics.yaml
+bases:
+  - ../base
