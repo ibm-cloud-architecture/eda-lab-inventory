@@ -31,7 +31,27 @@ To run locally with docker compose, be sure to have allocated enought docker res
 
 `docker-compose -f environment/local/docker-compose up -d`
 
-## Lab 2: Deploy with scripts to an OpenShift Cluster
+## Lab 2: Deploy to an OpenShift Cluster
+
+### Deploy environment
+
+#### Tekton Pipeline
+
+We will start by deploying Tekton and custom pipeline. First verify the environment setting in the `./scripts/env-amq-streams.sh` file.
+
+We can use a unique script to create a project with `-pipe` suffix, deploy Tekton operator if not yet set, and a builder service account, all this with the following command.
+
+```sh
+./scripts/deployPipelineEnv.sh
+```
+
+#### Nexus repository
+
+```sh
+/scripts/deployNexus.sh
+```
+
+Get external URL to access Nexus: ``
 
 
 

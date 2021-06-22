@@ -110,7 +110,7 @@ spec:
       - name: kafka-cert
         secret:
           optional: true
-          secretName: my-kafka-cluster-ca-cert
+          secretName: kafka-cluster-ca-cert
       - name: user-cert
         secret:
           optional: true

@@ -13,36 +13,7 @@ OCP_ADMIN_USER=${OCP_ADMIN_USER:=admin}
 OCP_ADMIN_PASSWORD=${OCP_ADMIN_PASSWORD:=admin}
 
 source ${scriptDir}/env-amq-streams.sh
-
-###################################
-### DO NOT EDIT BELOW THIS LINE ###
-###################################
-### EDIT AT YOUR OWN RISK      ####
-###################################
-
-
-function install_operator() {
-### function will create an operator subscription to the openshift-operators
-###          namespace for CR use in all namespaces
-### parameters:
-### $1 - operator name
-### $2 - operator channel
-### $3 - operator catalog source
-cat <<EOF | oc apply -f -
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: ${1}
-  namespace: openshift-operators
-spec:
-  channel: ${2}
-  name: ${1}
-  source: $3
-  sourceNamespace: openshift-marketplace
-  targetNamespaces: $4
-EOF
-}
-
+source ${scriptDir}/defineOperator.sh
 
 ############
 ### MAIN ###
@@ -68,31 +39,13 @@ fi
 ### specify the latest manually verified operator version for a given OCP version
 ### instead of just the default "stable" stream.
 OPERATOR_VERSION="stable"
-
+OPERATOR_NAME="amq-streams"
 if [[ -z "$(oc get -n openshift-operators subscription | grep amq-streams )" ]]
 then
-  echo "Install the Strimzi Operator ${OPERATOR_VERSION}"
+  echo "Install the $OPERATOR_NAME Operator ${OPERATOR_VERSION}"
   echo "-------------------------------------------------------"
-  install_operator "amq-streams " "${OPERATOR_VERSION}" "redhat-operators" $YOUR_PROJECT_NAME
-  ###TODO### Alternate implementation for `oc wait --for=condition=AtLatestKnown subscription/__operator_subscription__ --timeout 300s`
-  echo "Waiting for strimzi-kafka-operator operator to be deployed..."
-  counter=0
-  desired_state="AtLatestKnown"
-  until [[ ("$(oc get -n openshift-operators subscription amq-streams -o jsonpath="{.status.state}")" == "${desired_state}") || ( ${counter} == 60 ) ]]
-  do
-    ((counter++))
-    echo -n "..."
-    sleep 5
-  done
-  if [[ ${counter} == 60 ]]
-  then
-    echo
-    echo "[ERROR] - Timeout occurred while deploying the Strimzi Kafka Operator"
-    exit 1
-  else
-    echo "Done"
-  fi
-
+  install_operator $OPERATOR_NAME "${OPERATOR_VERSION}" "redhat-operators" $YOUR_PROJECT_NAME
+  waitUntilOperatorReady $OPERATOR_NAME
 fi
 
 cluster_present=$( oc get kafka | grep $KAFKA_CLUSTER_NAME)
