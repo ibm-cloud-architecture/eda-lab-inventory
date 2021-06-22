@@ -1,0 +1,163 @@
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Zookeeper
+metadata:
+  name: zookeeper
+  namespace: confluent
+spec:
+  replicas: 3
+  image:
+    application: confluentinc/cp-zookeeper-operator:6.1.0.0
+    init: confluentinc/cp-init-container-operator:6.1.0.0
+  dataVolumeCapacity: 10Gi
+  logVolumeCapacity: 10Gi
+  tls:
+    secretRef: zk-tls
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Kafka
+metadata:
+  name: kafka
+  namespace: confluent
+spec:
+  replicas: 3
+  image:
+    application: confluentinc/cp-server-operator:6.1.0.0
+    init: confluentinc/cp-init-container-operator:6.1.0.0
+  dataVolumeCapacity: 10Gi
+  metricReporter:
+    enabled: true
+  tls:
+    secretRef: generic-tls
+  listeners:
+    internal:
+      authentication:
+        type: plain
+        jaasConfig:
+          secretRef: internal-plain-credential
+      tls:
+        enabled: true
+        secretRef: kafka-tls-internal
+    external:
+      authentication:
+        type: mtls
+        principalMappingRules:
+          - RULE:.*CN[\s]?=[\s]?([a-zA-Z0-9.]*)?.*/$1/
+      tls:
+        enabled: true
+        secretRef: kafka-tls-external
+      externalAccess:
+        type: route
+        route:
+          domain: aa-eda-202106-6ccd7f378ae819553d37d5f2ee142bd6-0000.us-east.containers.appdomain.cloud
+          bootstrapPrefix: bootstrap
+          brokerPrefix: broker
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Connect
+metadata:
+  name: connect
+  namespace: confluent
+spec:
+  replicas: 1
+  image:
+    application: confluentinc/cp-server-connect-operator:6.1.0.0
+    init: confluentinc/cp-init-container-operator:6.1.0.0
+  tls:
+    secretRef: connect-tls
+  dependencies:
+    kafka:
+      bootstrapEndpoint: kafka.confluent.svc.cluster.local:9071
+      authentication:
+        type: plain
+        jaasConfig:
+          secretRef: internal-plain-credential
+      tls:
+        enabled: true
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: KsqlDB
+metadata:
+  name: ksqldb
+  namespace: confluent
+spec:
+  replicas: 1
+  image:
+    application: confluentinc/cp-ksqldb-server-operator:6.1.0.0
+    init: confluentinc/cp-init-container-operator:6.1.0.0
+  dataVolumeCapacity: 10Gi
+  tls:
+    secretRef: ksqldb-tls
+  dependencies:
+    kafka:
+      bootstrapEndpoint: kafka.confluent.svc.cluster.local:9071
+      authentication:
+        type: plain
+        jaasConfig:
+          secretRef: internal-plain-credential
+      tls:
+        enabled: true
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: ControlCenter
+metadata:
+  name: controlcenter
+  namespace: confluent
+spec:
+  replicas: 1
+  image:
+    application: confluentinc/cp-enterprise-control-center-operator:6.1.0.0
+    init: confluentinc/cp-init-container-operator:6.1.0.0
+  dataVolumeCapacity: 10Gi
+  tls:
+    secretRef: controlcenter-tls
+  externalAccess:
+    type: route
+    route:
+      domain: daa-eda-202106-6ccd7f378ae819553d37d5f2ee142bd6-0000.us-east.containers.appdomain.cloud
+      prefix: cc-route
+  dependencies:
+    kafka:
+      bootstrapEndpoint: kafka.cfk.svc.cluster.local:9071
+      authentication:
+        type: plain
+        jaasConfig:
+          secretRef: internal-plain-credential
+      tls:
+        enabled: true
+    connect:
+      - name: connect
+        url:  https://connect.confluent.svc.cluster.local:8083
+        tls:
+          enabled: true
+    ksqldb:
+      - name: ksqldb
+        url:  https://ksqldb.confluent.svc.cluster.local:8088
+        tls:
+          enabled: true
+    schemaRegistry:
+      url: https://schemaregistry.confluent.svc.cluster.local:8081
+      tls:
+        enabled: true
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: SchemaRegistry
+metadata:
+  name: schemaregistry
+  namespace: confluent
+spec:
+  replicas: 1
+  image:
+    application: confluentinc/cp-schema-registry-operator:6.1.0.0
+    init: confluentinc/cp-init-container-operator:6.1.0.0
+  tls:
+    secretRef: schemaregistry-tls
+  dependencies:
+    kafka:
+      bootstrapEndpoint: kafka.confluent.svc.cluster.local:9071
+      authentication:
+        type: plain
+        jaasConfig:
+          secretRef: internal-plain-credential
+      tls:
+        enabled: true
