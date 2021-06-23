@@ -114,7 +114,7 @@ spec:
   externalAccess:
     type: route
     route:
-      domain: daa-eda-202106-6ccd7f378ae819553d37d5f2ee142bd6-0000.us-east.containers.appdomain.cloud
+      domain: aa-eda-202106-6ccd7f378ae819553d37d5f2ee142bd6-0000.us-east.containers.appdomain.cloud
       prefix: cc-route
   dependencies:
     kafka:

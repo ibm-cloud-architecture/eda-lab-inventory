@@ -31,6 +31,12 @@ To run locally with docker compose, be sure to have allocated enought docker res
 
 `docker-compose -f environment/local/docker-compose up -d`
 
+Then see [the demonstration script](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution) to test the application manually.
+
+If you want to run integration tests execute the following script.
+
+TBD 
+
 ## Lab 2: Deploy to an OpenShift Cluster
 
 ### Deploy environment
