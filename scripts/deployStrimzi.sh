@@ -76,7 +76,7 @@ case ${OCP_VERSION} in
     STRIMZI_OPERATOR_VERSION="strimzi-0.19.x"
     ;;
   *)
-    STRIMZI_OPERATOR_VERSION="strimzi-0.23.x"
+    STRIMZI_OPERATOR_VERSION="strimzi-0.25.x"
     # IBM OpenLabs comes with OpenShift 4.6. That means this script will install the stable version of the Strimzi Operator
     # Stable version of the Strimzi Operator is 0.23.0 as of May the 18th 2021. Version 0.23.0 of the Stimzi Operator uses different APIs for the CRDs such as "kafka.strimzi.io/v1beta2" instead of "kafka.strimzi.io/v1beta1".
     # As a result of using these new APIs, we would need to fork the ../environments/strimzi Kustomize files to use newer APIs and use one or the other from this script based on the Strimzi Operator version.

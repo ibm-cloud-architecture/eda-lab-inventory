@@ -1,1 +1,2 @@
 environments/confluent/certs/generated/*.pem
+.DS_Store
